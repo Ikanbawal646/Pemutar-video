@@ -168,11 +168,19 @@ details summary::after {
 <ul id="playlist" style="max-width: 900px; margin: auto; list-style: none; padding: 0; color: #00e5ff;"></ul>
 
 
-
+<!-- Tambahkan di bagian dalam <body>, tepat sebelum <div class="video-container" ...> -->
+<div style="text-align:center; margin: 20px;">
+  <input type="text" id="videoURLInput" placeholder="Tempelkan URL video di sini" style="width: 60%; padding: 8px; border-radius: 10px; border: 1px solid #00e5ff; background: #1e1e1e; color: #00e5ff;">
+  <button onclick="playOnlineVideo()">🌐 Putar dari URL</button>
+</div>
 
 
   <div class="video-container" id="videoContainer">
-    <video id="videoPlayer" controls crossorigin="anonymous">
+  <video id="videoPlayer" controls>
+    <source id="videoSource" src="" type="video/mp4">
+    Browser Anda tidak mendukung pemutar video.
+  </video>
+
       <track id="subtitleTrack" kind="subtitles" label="Subtitle" srclang="id" default>
       <track id="chapterTrack" kind="chapters" srclang="id">
     </video>
@@ -252,6 +260,30 @@ details summary::after {
         setupAudioRouting();
       }
     });
+
+// Tambahkan ini di bagian <script> Anda
+function playOnlineVideo() {
+  const url = document.getElementById('videoURLInput').value.trim();
+  if (url) {
+    videoPlayer.src = url;
+    videoPlayer.load();
+    videoPlayer.play();
+    currentIndex = -1; // menandakan bukan dari playlist
+    highlightCurrent(-1);
+  } else {
+    alert("Masukkan URL video yang valid.");
+  }
+}
+
+
+function highlightCurrent(index) {
+  const items = playlistElement.querySelectorAll('li');
+  items.forEach((li, i) => {
+    li.style.background = i === index ? '#00e5ff' : 'transparent';
+    li.style.color = i === index ? '#000' : '#00e5ff';
+  });
+}
+
 
     function playVideo() { videoPlayer.play(); }
     function pauseVideo() { videoPlayer.pause(); }
